@@ -6,6 +6,7 @@ import {defineConfig, loadEnv} from 'vite';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
+    base: '/GovFlow-Practices/',
     plugins: [react(), tailwindcss()],
     css: {
       postcss: {}, // 禁用外部的 PostCSS 載入，避免讀取到全域的 Tailwind v3 設定
