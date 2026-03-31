@@ -16,12 +16,6 @@ import {
   Image as ImageIcon
 } from 'lucide-react';
 import { motion } from 'motion/react';
-
-// === 自訂圖片引入區 ===
-// 請確保截圖存於 src/assets 資料夾內，並與下方檔名一致，若不一樣請修改檔名：
-import settingImg from './assets/005.jpg';
-import errorImg from './assets/006.jpg';
-
 export default function App() {
   const sections = [
     { id: 'intro', component: <IntroSlide /> },
@@ -29,6 +23,7 @@ export default function App() {
     { id: 'scenario2', component: <Scenario2 /> },
     { id: 'scenario3', component: <Scenario3 /> },
     { id: 'scenario4', component: <Scenario4 /> },
+    { id: 'scenario5', component: <Scenario5 /> },
     { id: 'thanks', component: <ThanksSlide /> },
   ];
 
@@ -60,10 +55,13 @@ export default function App() {
 
 function ImagePlaceholder({ label, src }: { label?: string, src?: string }) {
   if (src) {
+    // 處理 Vite base path 問題：若為絕對路徑，加上 import.meta.env.BASE_URL
+    // @ts-ignore
+    const finalSrc = src.startsWith('/') ? `${(import.meta as any).env.BASE_URL}${src.slice(1)}` : src;
     return (
-      <div className="w-full my-6 rounded-2xl overflow-hidden border border-slate-800 shadow-xl group bg-slate-900/50 p-2">
-        <img src={src} alt={label || '插入的圖片'} className="w-full h-auto object-cover rounded-xl transition-transform duration-700 group-hover:scale-[1.02]" />
-        {label && <p className="text-center text-sm font-bold text-slate-400 mt-4 mb-2">{label}</p>}
+      <div className="w-full my-6 rounded-2xl overflow-hidden border border-slate-800 shadow-xl group bg-slate-900/50 p-3 md:p-4">
+        {label && <div className="mb-3 px-1"><span className="text-xl font-bold text-slate-300 flex items-center before:content-[''] before:w-1.5 before:h-6 before:bg-blue-500 before:mr-3 before:rounded-full">{label}</span></div>}
+        <img src={finalSrc} alt={label || '插入的圖片'} className="w-full h-auto object-cover rounded-xl transition-transform duration-700 group-hover:scale-[1.02]" />
       </div>
     );
   }
@@ -76,7 +74,7 @@ function ImagePlaceholder({ label, src }: { label?: string, src?: string }) {
       <div className="text-center px-4 space-y-2">
         <p className="text-slate-300 font-bold text-lg">{label || '圖片區塊'}</p>
         <p className="text-xs text-slate-500 font-mono bg-slate-900 px-4 py-2 rounded-lg inline-block text-left break-all">
-          {'<ImagePlaceholder src="圖片網址" label="圖片說明" />'}
+          {'<ImagePlaceholder src="/images/檔名.jpg" label="圖片說明" />'}
         </p>
       </div>
     </div>
@@ -140,8 +138,11 @@ function IntroSlide() {
           transition={{ delay: 0.6 }}
           className="text-2xl text-slate-400 max-w-2xl mx-auto font-light leading-relaxed pt-2"
         >
-          本次分享將以<span className="text-blue-300 font-bold px-1">經濟部水利署</span>的真實案例來呈現各種會辦情境，<br className="hidden md:block" />
-          往下捲動以開始閱讀。<br />
+          本次分享將以<span className="text-blue-300 font-bold px-1">經濟部水利署</span>的真實案例來呈現各種會辦情境
+          <span className="block mt-12 mb-8">
+            特別感謝<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400 font-black px-1">Google Gemini</span>、<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-black px-1">Google Antigravity</span>
+          </span>
+          往下捲動以開始閱讀
         </motion.p>
       </div>
 
@@ -159,41 +160,59 @@ function IntroSlide() {
   );
 }
 
-function Scenario1() {
+function Scenario2() {
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-6">
         <div className="space-y-1">
-          <p className="text-blue-400 text-base font-bold uppercase tracking-widest">情境一</p>
+          <p className="text-blue-400 text-base font-bold uppercase tracking-widest">情境二</p>
           <h3 className="text-4xl font-bold text-white">內會並會 + 內會</h3>
         </div>
       </div>
 
       <div className="space-y-6 mt-6">
-        <div className="bg-slate-900/50 rounded-3xl p-8 border border-slate-800 shadow-inner">
+        <ImagePlaceholder src="/images/015.jpg" label="本文簽辦內容" />
+        <div className="bg-slate-900/40 p-6 rounded-3xl border border-slate-800 shadow-inner my-8">
+          <h4 className="text-2xl font-bold text-white mb-4">內容懶人包</h4>
+          <p className="text-lg text-slate-300 font-bold mb-3">【115年度工務行政督導作業籌備】</p>
+          <ul className="space-y-3 text-lg text-slate-400 list-disc list-inside ml-2 marker:text-blue-500">
+            <li>辦理項目： 年度行政督導及宣導作業。</li>
+            <li className="flex flex-col">
+              <span>需更新資料：</span>
+              <ul className="list-[circle] list-inside ml-6 mt-2 space-y-2">
+                <li>115年度工務行政督導重點項目表。</li>
+                <li>115年工務組工務行政宣導簡報。</li>
+              </ul>
+            </li>
+            <li>繳交期限： 115年3月3日 (二) 下班前。</li>
+            <li>彙整單位： 第一科。</li>
+          </ul>
+        </div>
+
+        <FlowchartAccordion>
           <div className="flex flex-col space-y-8">
             <div className="flex justify-center">
               <div className="bg-slate-800 border-2 border-blue-500 p-4 rounded-2xl shadow-lg w-72 text-center">
                 <p className="text-sm font-bold text-slate-500 uppercase mb-1 tracking-widest">發起：內會並會</p>
-                <p className="font-bold text-xl text-white">工務一科 承辦人</p>
+                <p className="font-bold text-xl text-white">工程事務一科 承辦人</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-5 bg-blue-950/20 rounded-2xl border border-blue-900/30">
-                <h4 className="text-base font-bold mb-4 text-blue-400 flex items-center uppercase tracking-wider">
-                  <Users className="w-5 h-5 mr-2" /> 同科會辦 (A&B)
+              <div className="p-5 bg-slate-800/30 rounded-2xl border border-slate-700/50">
+                <h4 className="text-base font-bold mb-4 text-slate-400 flex items-center uppercase tracking-wider">
+                  <Users className="w-5 h-5 mr-2" /> 內會並會 (同科)
                 </h4>
                 <div className="space-y-4 text-center">
                   <div className="bg-slate-800 p-3 rounded-xl text-base border border-slate-700 text-slate-300">同科承辦人 A & B 寫完意見</div>
-                  <ArrowDown className="text-blue-500/50 w-6 h-6 mx-auto" />
-                  <div className="bg-blue-600/20 p-3 rounded-xl text-base font-bold text-blue-400 border border-blue-500/30">會辦完畢，直接送回給承辦人</div>
+                  <ArrowDown className="text-slate-600 w-6 h-6 mx-auto" />
+                  <div className="bg-slate-700 p-3 rounded-xl text-base font-bold text-white border border-slate-600 shadow-lg relative overflow-hidden">會辦完畢，直接送回給承辦人</div>
                 </div>
               </div>
 
               <div className="p-5 bg-slate-800/30 rounded-2xl border border-slate-700/50">
                 <h4 className="text-base font-bold mb-4 text-slate-400 flex items-center uppercase tracking-wider">
-                  <Layers className="w-5 h-5 mr-2" /> 跨科研議 (二、三、四科)
+                  <Layers className="w-5 h-5 mr-2" /> 內會並會 (二、三、四科)
                 </h4>
                 <div className="space-y-4 text-center">
                   <div className="bg-slate-800 p-3 rounded-xl text-base border border-slate-700 text-slate-300">科長進行會辦分文</div>
@@ -217,10 +236,10 @@ function Scenario1() {
               </div>
             </div>
           </div>
-        </div>
+        </FlowchartAccordion>
 
         <div className="w-full my-8">
-          <ImagePlaceholder label="情境 1 流程示意圖" />
+          <ImagePlaceholder src="/images/016.jpg" label="流程" />
         </div>
 
         <div className="bg-slate-900/40 p-8 rounded-3xl border border-slate-700/50 shadow-lg mb-8 relative overflow-hidden">
@@ -234,71 +253,113 @@ function Scenario1() {
           </p>
 
           <div className="space-y-6">
-            <ImagePlaceholder src={settingImg} label="送出畫面設定「內會後送回」" />
-            <ImagePlaceholder src={errorImg} label="錯誤提示：不能為空白" />
+            <ImagePlaceholder src="/images/22.jpg" label="送出畫面設定「內會後送回」" />
+            <ImagePlaceholder src="/images/2223.jpg" label="錯誤提示：不能為空白" />
           </div>
-        </div>
-
-        <div className="bg-slate-900/30 p-6 rounded-2xl border border-slate-800">
-          <h4 className="font-bold mb-5 flex items-center text-lg text-slate-300 uppercase tracking-widest">
-            <ListChecks className="w-6 h-6 mr-2 text-blue-500" /> 實務重點
-          </h4>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-5 text-slate-400">
-            <li className="flex flex-col bg-slate-800/40 p-6 rounded-2xl border border-slate-700/30 shadow-sm hover:border-slate-600 transition-colors">
-              <div className="flex items-center mb-4">
-                <span className="bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold px-3 py-1 rounded-lg text-sm mr-3 shadow-inner">觀念 01</span>
-                <span className="text-white font-bold text-xl">同科與跨科的分流差異</span>
-              </div>
-              <p className="leading-relaxed text-lg">
-                同科流轉較為扁平，研議完畢可直接送回原發起人；跨科則需嚴守組織層級，最終結論必須透過「<span className="text-blue-300 font-bold">內會陳核</span>」交由該科科長核准後，才能統一退回。
-              </p>
-            </li>
-            <li className="flex flex-col bg-slate-800/40 p-6 rounded-2xl border border-slate-700/30 shadow-sm hover:border-slate-600 transition-colors">
-              <div className="flex items-center mb-4">
-                <span className="bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold px-3 py-1 rounded-lg text-sm mr-3 shadow-inner">觀念 02</span>
-                <span className="text-white font-bold text-xl">科室內部的流轉彈性</span>
-              </div>
-              <p className="leading-relaxed text-lg">
-                在跨科處理時，承辦人若需科內支援，可先利用「<span className="text-indigo-300 font-bold">內會</span>」功能與本科同仁串聯研擬意見，最後再交由最後一位同仁執行陳核，保持高度的作業彈性。
-              </p>
-            </li>
-          </ul>
         </div>
       </div>
     </div>
   );
 }
 
-function Scenario2() {
-  return (
-    <div className="h-full flex flex-col justify-center space-y-10">
-      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-6">
-        <div className="space-y-1">
-          <p className="text-emerald-400 text-base font-bold uppercase tracking-widest">情境二</p>
-          <h3 className="text-4xl font-bold text-white">內會並會</h3>
-        </div>
-        <div className="mt-4 md:mt-0 flex items-center space-x-3">
-          <span className="bg-emerald-950/30 text-emerald-400 px-4 py-2 rounded-xl font-bold border border-emerald-900/50 text-base shadow-inner">簡化流程</span>
-        </div>
-      </div>
+function FlowchartAccordion({ children }: { children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [hasAutoOpened, setHasAutoOpened] = useState(false);
 
-      <div className="space-y-6 mt-6">
-        <div className="bg-slate-900/50 rounded-[2.5rem] border border-slate-800 p-12 text-center shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
-          <Zap className="w-20 h-20 mx-auto text-emerald-400 mb-8 group-hover:scale-110 transition-transform duration-500" />
-          <h4 className="text-3xl font-bold text-white mb-6">流程核心差異</h4>
-          <p className="text-slate-400 text-xl leading-relaxed font-light">
-            此情境與「情境 1」邏輯一致，但為了提升效率，<br />
-            <span className="text-emerald-400 font-bold text-3xl block mt-4">完全省略了「內會」的流轉環節。</span>
-          </p>
-          <div className="mt-10 p-5 bg-emerald-950/20 rounded-2xl border border-dashed border-emerald-900/50 text-lg text-emerald-300 font-medium">
-            適用於：僅需平行單位知悉、不需主管核章之簡單公文。
+  return (
+    <div className="bg-slate-900/50 rounded-3xl border border-slate-800 shadow-inner overflow-hidden mt-8 transition-all duration-500">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex flex-col md:flex-row items-center md:items-center justify-between p-6 md:p-8 hover:bg-slate-800/80 transition-colors cursor-pointer group"
+      >
+        <h4 className="text-2xl font-bold text-white flex items-center mb-4 md:mb-0">
+          <span className="w-2 h-8 bg-blue-500 rounded-full mr-3"></span> 公文怎麼跑？ (流程示意圖)
+        </h4>
+        <div className="flex items-center space-x-3 self-center md:self-auto">
+          <span className={`text-sm font-medium px-3 py-1 rounded-full transition-colors ${isOpen ? 'bg-slate-800 text-slate-400' : 'bg-blue-600/30 text-blue-400 group-hover:bg-blue-600/50'}`}>
+            {isOpen ? '點擊收合' : '點擊展開流程'}
+          </span>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center bg-slate-800 text-slate-400 transform transition-transform duration-500 ${isOpen ? 'rotate-180' : ''}`}>
+            ▼
           </div>
         </div>
+      </button>
 
-        <div className="w-full my-8">
-          <ImagePlaceholder label="情境 2 流程示意圖" />
+      <motion.div
+        initial={false}
+        whileInView={hasAutoOpened ? undefined : { opacity: 1 }}
+        onViewportEnter={() => {
+          if (!hasAutoOpened) {
+            setIsOpen(true);
+            setHasAutoOpened(true);
+          }
+        }}
+        viewport={{ margin: "-100px", once: true }}
+      >
+        <div className={`grid transition-all duration-700 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'}`}>
+          <div className="overflow-hidden">
+            <div className="p-6 md:p-8 pt-0 border-t border-slate-800/50 mt-2">
+              {children}
+            </div>
+          </div>
         </div>
+      </motion.div>
+    </div>
+  );
+}
+
+function Scenario1() {
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-6">
+        <div className="space-y-1">
+          <p className="text-blue-400 text-base font-bold uppercase tracking-widest">情境一</p>
+          <h3 className="text-4xl font-bold text-white">內會並會</h3>
+        </div>
+      </div>
+      <div className="space-y-6 mt-6">
+        <ImagePlaceholder src="/images/002.jpg" label="來文&本文簽辦內容" />
+        <div className="bg-slate-900/40 p-6 rounded-3xl border border-slate-800 shadow-inner my-8">
+          <h4 className="text-2xl font-bold text-white mb-4">內容懶人包</h4>
+          <p className="text-lg text-slate-300 font-bold mb-3">114年12月部文辦理情形</p>
+          <ul className="space-y-3 text-lg text-slate-400 list-disc list-inside ml-2 marker:text-blue-500">
+            <li>平均處理時效： 1.97 日</li>
+            <li>辦結率： 88.93%（低於第3季均值 92.72%）</li>
+            <li>本室統計： 辦理件數 0 件</li>
+            <li>後續作為： 持續強化流程管控，落實時效管理。</li>
+          </ul>
+
+          <FlowchartAccordion>
+            <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+              <div className="bg-slate-800/80 border border-slate-700/50 p-4 rounded-xl text-center shadow-md w-full md:w-auto flex-1 h-full flex items-center justify-center">
+                <span className="text-slate-300 font-medium">內會並會<br className="hidden md:block" />單位內各同仁</span>
+              </div>
+
+              <ChevronRight className="w-8 h-8 text-blue-500/50 hidden md:block flex-shrink-0" />
+              <ArrowDown className="w-6 h-6 text-blue-500/50 md:hidden flex-shrink-0" />
+
+              <div className="bg-blue-600/20 border border-blue-500/30 p-4 rounded-xl text-center shadow-md w-full md:w-auto flex-1 h-full flex items-center justify-center">
+                <span className="text-blue-300 font-bold">直接送回<br className="hidden md:block" />科長</span>
+              </div>
+
+              <ChevronRight className="w-8 h-8 text-blue-500/50 hidden md:block flex-shrink-0" />
+              <ArrowDown className="w-6 h-6 text-blue-500/50 md:hidden flex-shrink-0" />
+
+              <div className="bg-slate-800/80 border border-slate-700/50 p-4 rounded-xl text-center shadow-md w-full md:w-auto flex-1 h-full flex items-center justify-center">
+                <span className="text-slate-300 font-medium">科長<br className="hidden md:block" />再陳核</span>
+              </div>
+
+              <ChevronRight className="w-8 h-8 text-blue-500/50 hidden md:block flex-shrink-0" />
+              <ArrowDown className="w-6 h-6 text-blue-500/50 md:hidden flex-shrink-0" />
+
+              <div className="bg-slate-800/80 border border-slate-700/50 p-4 rounded-xl text-center shadow-md w-full md:w-auto flex-1 h-full flex items-center justify-center">
+                <span className="text-slate-300 font-medium">最後<br className="hidden md:block" />主任決行</span>
+              </div>
+            </div>
+          </FlowchartAccordion>
+        </div>
+        <ImagePlaceholder src="/images/003.jpg" label="公文流程" />
+        <ImagePlaceholder src="/images/004.jpg" label="簽核意見" />
       </div>
     </div>
   );
@@ -310,42 +371,203 @@ function Scenario3() {
       <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-6">
         <div className="space-y-1">
           <p className="text-blue-400 text-base font-bold uppercase tracking-widest">情境三</p>
-          <h3 className="text-4xl font-bold text-white">並會 (跨單位)</h3>
+          <h3 className="text-4xl font-bold text-white">內會並會+內會並會</h3>
+        </div>
+      </div>
+      <div className="space-y-6 mt-6">
+        <ImagePlaceholder src="/images/005.jpg" label="來文&本文簽辦內容" />
+        <div className="bg-slate-900/40 p-6 rounded-3xl border border-slate-800 shadow-inner my-8">
+          <h4 className="text-2xl font-bold text-white mb-4">內容懶人包</h4>
+          <p className="text-lg text-slate-300 font-bold mb-3">【115年2月同仁工作負荷管理】</p>
+          <ul className="space-y-3 text-lg text-slate-400 list-disc list-inside ml-2 marker:text-blue-500">
+            <li>異常指標： 公文件數、電腦開機時間高於平均值。</li>
+            <li>管理目標： 營造友善職場、落實工作生活平衡。</li>
+            <li>具體作為： 單位主管主動了解同仁狀況，並給予必要協助。</li>
+          </ul>
+
+          <FlowchartAccordion>
+            <div className="flex flex-col items-center justify-center space-y-5">
+              {/* Node 1 */}
+              <div className="bg-slate-800/80 border border-slate-700/50 p-5 rounded-2xl text-center shadow-md w-full max-w-xs md:max-w-sm">
+                <span className="text-slate-300 font-medium leading-relaxed">二科承辦人內會並會<br />一科跟三科以及<br />同科兩位承辦人</span>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <ArrowDown className="w-6 h-6 text-blue-500/50 flex-shrink-0" />
+              </div>
+
+              {/* Branch Container (Side-by-side columns on md, stacked on small) */}
+              <div className="flex flex-col md:flex-row items-stretch justify-center gap-6 w-full max-w-2xl px-2 md:px-0">
+
+                {/* Top Branch (Left Column) */}
+                <div className="flex flex-col items-center justify-start flex-1 w-full">
+                  <div className="bg-slate-800/80 border border-slate-700/50 p-5 rounded-2xl text-center shadow-md w-full h-full flex flex-col items-center justify-center min-h-[4rem]">
+                    <span className="text-slate-300 font-medium leading-relaxed">同科會辦人送回給<br />原承辦人</span>
+                  </div>
+                  {/* Invisible spacer to match height of the right column on desktop if desired, but flex-1 h-full does it anyway */}
+                </div>
+
+                {/* Bottom Branch (Right Column) */}
+                <div className="flex flex-col items-center space-y-4 flex-1 w-full">
+                  <div className="bg-slate-800/80 border border-slate-700/50 p-5 rounded-2xl text-center shadow-md w-full flex items-center justify-center min-h-[4rem]">
+                    <span className="text-slate-300 font-medium leading-relaxed">一科跟三科會辦人<br />再內會並會給同科同仁</span>
+                  </div>
+
+                  <div className="flex items-center justify-center">
+                    <ArrowDown className="w-6 h-6 text-blue-500/50 flex-shrink-0" />
+                  </div>
+
+                  <div className="bg-slate-800/80 border border-slate-700/50 p-5 rounded-2xl text-center shadow-md w-full flex items-center justify-center min-h-[4rem]">
+                    <span className="text-slate-300 font-medium leading-relaxed">同仁再各自<br />內會陳核給科長</span>
+                  </div>
+
+                  <div className="flex items-center justify-center">
+                    <ArrowDown className="w-6 h-6 text-blue-500/50 flex-shrink-0" />
+                  </div>
+
+                  <div className="bg-slate-800/80 border border-slate-700/50 p-5 rounded-2xl text-center shadow-md w-full flex items-center justify-center min-h-[4rem]">
+                    <span className="text-slate-300 font-medium leading-relaxed">科長將文送回給<br />原承辦人</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <div className="flex items-center justify-center mt-2">
+                <ArrowDown className="w-6 h-6 text-blue-500/50 flex-shrink-0" />
+              </div>
+
+              {/* Final */}
+              <div className="bg-blue-600/20 border border-blue-500/30 p-5 rounded-2xl text-center shadow-md w-full max-w-xs md:max-w-sm">
+                <span className="text-blue-300 font-bold leading-relaxed">最後送陳核流程</span>
+              </div>
+            </div>
+          </FlowchartAccordion>
+        </div>
+        <ImagePlaceholder src="/images/008.jpg" label="設定歷程" />
+        <ImagePlaceholder src="/images/009.jpg" label="簽核意見" />
+      </div>
+    </div>
+  );
+}
+
+function Scenario4() {
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-6">
+        <div className="space-y-1">
+          <p className="text-blue-400 text-base font-bold uppercase tracking-widest">情境四</p>
+          <h3 className="text-4xl font-bold text-white">並會</h3>
         </div>
       </div>
 
       <div className="space-y-6 mt-6">
-        <div className="bg-slate-900/50 rounded-3xl p-8 border border-slate-800 shadow-inner">
-          <div className="flex flex-col md:flex-row items-center justify-center md:space-x-8 space-y-8 md:space-y-0">
-            <div className="bg-slate-800 border-2 border-blue-500 p-5 rounded-2xl shadow-lg w-56 text-center">
-              <p className="text-sm font-bold text-slate-500 uppercase mb-1 tracking-widest">主辦</p>
-              <p className="font-bold text-xl text-white">工務組</p>
+        <div className="bg-slate-900/30 p-6 md:p-8 rounded-3xl border border-slate-800">
+          <h4 className="text-2xl font-bold text-white mb-6 flex items-center">
+            <span className="w-2 h-8 bg-blue-500 rounded-full mr-3"></span> 內容懶人包
+          </h4>
+
+          <div className="space-y-6">
+            <div>
+              <h5 className="text-xl font-bold text-blue-300 mb-3 border-b border-slate-700/50 pb-2">去年（114年）我們做到了什麼？</h5>
+              <ul className="space-y-3 text-slate-300 text-lg">
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">世界第一：</strong> 幫防洪水利工程訂出了全世界第一套「碳足跡計算規則」(PCR) 。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">手機就是掃描器：</strong> 開發出用手機拍照片就能自動辨識「鋼筋間距」的 AI 系統 。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">機具監控：</strong> 用手機就能記錄工地怪手等機具跑了多久，算出排多少碳 。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">優化系統：</strong> 幫水利署把數位轉型的系統維護好 。</div>
+                </li>
+              </ul>
             </div>
 
-            <ChevronRight className="w-10 h-10 text-slate-700 hidden md:block flex-shrink-0" />
-
-            <div className="flex flex-col space-y-4">
-              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 text-base w-48 text-center text-slate-300">主計室</div>
-              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 text-base w-48 text-center text-slate-300">綜企組</div>
-              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 text-base w-48 text-center text-slate-300">水文組</div>
+            <div>
+              <h5 className="text-xl font-bold text-indigo-300 mb-3 border-b border-slate-700/50 pb-2 mt-4">今年（115年）要做什麼？</h5>
+              <ul className="space-y-3 text-slate-300 text-lg">
+                <li className="flex items-start">
+                  <span className="text-indigo-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">計畫主旨：</strong> 繼續補助工研院 XXX 萬元，把 AI 和減碳技術做得更完整 。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-indigo-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">目標：</strong> 建立「數位碳盤查系統」，以後用 AI 幫忙分析，可以省人力、提高效率 。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-indigo-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">預算小變動：</strong> 因為行政院砍了部分預算，所以我們決定把「海水綠科技」項目刪掉，集中火力做「水利綠工程淨零」。</div>
+                </li>
+              </ul>
             </div>
 
-            <ChevronRight className="w-10 h-10 text-slate-700 hidden md:block flex-shrink-0" />
-
-            <div className="bg-blue-600 text-white p-8 rounded-[2rem] shadow-2xl w-80 border border-blue-400/30">
-              <h4 className="text-sm font-bold opacity-80 mb-5 uppercase tracking-widest">內部處理程序</h4>
-              <ol className="text-base space-y-4">
-                <li className="flex items-center"><CheckCircle className="w-5 h-5 mr-3 text-blue-200" /> 登記桌收文分派</li>
-                <li className="flex items-center"><CheckCircle className="w-5 h-5 mr-3 text-blue-200" /> 科長派給會辦人</li>
-                <li className="flex items-center"><CheckCircle className="w-5 h-5 mr-3 text-blue-200" /> 會辦人內會陳核</li>
-                <li className="flex items-center"><CheckCircle className="w-5 h-5 mr-3 text-blue-200" /> 單位主管核章</li>
-              </ol>
+            <div>
+              <h5 className="text-xl font-bold text-emerald-300 mb-3 border-b border-slate-700/50 pb-2 mt-4">各組室的「會辦意見」</h5>
+              <ul className="space-y-3 text-slate-300 text-lg">
+                <li className="flex items-start">
+                  <span className="text-emerald-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">主計室：</strong> 這筆經費我先記下來了，但之後工研院交出「細部計畫」時，要再送過來讓我審核一次 。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-emerald-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white border-b border-amber-500/50 pb-0.5">特別注意：</strong> 立法院還沒審完 115 年的預算，如果最後預算被砍，要提早跟工研院說，免得沒錢付 。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-emerald-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">綜合企劃組：</strong> 確認這筆錢是從「淨零科技」相關預算裡出的，沒問題，存檔 。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-emerald-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">水文技術組：</strong> 關於「AI 創新應用」那筆 XXX 萬元的經費，我們會記在帳上盯著（錄案控管） 。</div>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
 
+        <FlowchartAccordion>
+          <div className="flex flex-col items-center justify-center space-y-6">
+            <div className="bg-slate-800 border-2 border-blue-500 p-5 rounded-2xl shadow-lg w-56 text-center">
+              <p className="text-sm font-bold text-slate-500 uppercase mb-1 tracking-widest">主辦</p>
+              <p className="font-bold text-xl text-white">工程事務組</p>
+            </div>
+
+            <ArrowDown className="w-8 h-8 text-blue-500/50 flex-shrink-0" />
+
+            <div className="flex flex-row flex-wrap justify-center gap-4">
+              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 text-base w-32 md:w-48 text-center text-slate-300">主計室</div>
+              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 text-base w-32 md:w-48 text-center text-slate-300">綜合企劃組</div>
+              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 text-base w-32 md:w-48 text-center text-slate-300">水文技術組</div>
+            </div>
+
+            <ArrowDown className="w-8 h-8 text-blue-500/50 flex-shrink-0" />
+
+            <div className="bg-blue-900/40 text-blue-100 p-8 rounded-[2rem] shadow-xl w-full max-w-sm border border-blue-500/30">
+              <h4 className="text-sm font-bold text-blue-400 mb-5 uppercase tracking-widest text-center">各單位內部處理程序</h4>
+              <ol className="text-base space-y-4">
+                <li className="flex items-center"><CheckCircle className="w-5 h-5 mr-3 text-blue-400" /> 登記桌收文分派</li>
+                <li className="flex items-center"><CheckCircle className="w-5 h-5 mr-3 text-blue-400" /> 科長派給會辦人</li>
+                <li className="flex items-center"><CheckCircle className="w-5 h-5 mr-3 text-blue-400" /> 會辦人內會陳核</li>
+                <li className="flex items-center"><CheckCircle className="w-5 h-5 mr-3 text-blue-400" /> 單位主管核章</li>
+              </ol>
+            </div>
+
+            <ArrowDown className="w-8 h-8 text-blue-500/50 flex-shrink-0" />
+
+            <div className="bg-slate-800/80 border border-slate-700/50 p-5 rounded-2xl text-center shadow-md w-full max-w-sm flex justify-center">
+              <span className="text-slate-300 font-bold leading-relaxed tracking-wider">送回原承辦人</span>
+            </div>
+          </div>
+        </FlowchartAccordion>
+
         <div className="w-full my-8">
-          <ImagePlaceholder label="情境 3 流程示意圖" />
+          <ImagePlaceholder src="/images/017.jpg" label="設定歷程" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -363,60 +585,150 @@ function Scenario3() {
   );
 }
 
-function Scenario4() {
-  const steps = [
-    { title: '1. 發起', desc: '綜企組 並會至 水源組、保育組' },
-    { title: '2. 擴散', desc: '會辦人設定「內會並會」其他科' },
-    { title: '3. 執行', desc: '各科會辦人內會陳核科長後送回' },
-    { title: '4. 彙整', desc: '設定人內會陳核單位主管後送回' },
-  ];
-
+function Scenario5() {
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-6">
         <div className="space-y-1">
-          <p className="text-blue-400 text-base font-bold uppercase tracking-widest">情境四</p>
+          <p className="text-blue-400 text-base font-bold uppercase tracking-widest">情境五</p>
           <h3 className="text-4xl font-bold text-white">並會 + 內會並會</h3>
         </div>
       </div>
 
       <div className="space-y-6 mt-6">
-        <div className="bg-slate-900/50 rounded-3xl p-8 border border-slate-800 shadow-inner">
-          <div className="flex flex-col space-y-5 max-md mx-auto">
-            {steps.map((step, idx) => (
-              <div key={idx} className="flex items-center space-x-5 group">
-                <div className="bg-blue-600 text-white w-32 py-3 rounded-xl font-bold text-base text-center flex-shrink-0 shadow-lg shadow-blue-900/20 group-hover:bg-blue-500 transition-colors">
-                  {step.title}
+        <div className="bg-slate-900/30 p-6 md:p-8 rounded-3xl border border-slate-800">
+          <h4 className="text-2xl font-bold text-white mb-6 flex items-center">
+            <span className="w-2 h-8 bg-blue-500 rounded-full mr-3"></span> 前情提要
+          </h4>
+          <p className="text-lg text-slate-300 leading-relaxed mb-6">
+            內政部收到「國際公共水協會（台灣）」的籌組申請，透過經濟部商業發展署詢問水利署的意見，確認這個協會跟水利署的業務有沒有關係，以及水利署是否願意擔任其「目的事業主管機關」。
+          </p>
+
+          <div className="space-y-6">
+            <div>
+              <h5 className="text-xl font-bold text-blue-300 mb-3 border-b border-slate-700/50 pb-2">這個協會要做什麼？根據其章程草案，主要有四大目標：</h5>
+              <ul className="space-y-3 text-slate-300 text-lg">
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">整合交流：</strong> 促進台灣各個水資源相關公協會的技術合作與經驗分享。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">數位轉型：</strong> 推動水資源管理的數位化，並協助高科技產業建立省水標準。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">國際連結：</strong> 到海外設點（如美國），並與亞、歐洲的國際專業團體建立合作平台。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">人才培育：</strong> 帶領青年專業人士參與國際交流，培養具有國際觀的水利人才。</div>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h5 className="text-xl font-bold text-indigo-300 mb-3 border-b border-slate-700/50 pb-2 mt-4">水利署的評估與決定</h5>
+              <p className="text-lg text-slate-300 mb-3">水利署（綜合企劃組）評估後認為應該要擔任其主管機關，理由如下：</p>
+              <ul className="space-y-3 text-slate-300 text-lg">
+                <li className="flex items-start">
+                  <span className="text-indigo-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">業務高度相關：</strong> 該協會處理的事務包含飲用水、再生水、雨水及洪水，與水利署的職掌完全重疊。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-indigo-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">掌握管理權：</strong> 擔任主管機關後，可以依法對其進行指導、監督，若有違法情事也能進行處分。</div>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-indigo-500 mr-2 mt-1">●</span>
+                  <div><strong className="text-white">責任與義務：</strong> 法律規定主管機關只有監督權責，並沒有捐助經費的義務。</div>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
+              <h5 className="text-xl font-bold text-emerald-300 mb-4 flex items-center">
+                💬 水源經營組與保育事業組的意見
+              </h5>
+              <p className="text-lg text-slate-300 mb-4">這件公文當時有會辦這兩個核心組室，看看他們怎麼說：</p>
+              <div className="space-y-4">
+                <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
+                  <div className="flex items-start mb-2">
+                    <span className="text-2xl mr-3">💧</span>
+                    <div>
+                      <strong className="text-white text-lg block mb-1">水源經營組：</strong>
+                      <span className="text-slate-300 text-lg">收到公文後，先請組內的一科到五科全部看過一遍。</span>
+                    </div>
+                  </div>
+                  <div className="ml-9 border-l-2 border-slate-700 pl-4 py-1">
+                    <strong className="text-emerald-400">最終綜整：</strong> <span className="text-slate-300">全組確認後表示<strong className="text-white">「無意見」</strong>，也就是說他們覺得協會成立跟目前水源經營的實務運作沒有衝突。</span>
+                  </div>
                 </div>
-                <div className="flex-grow h-px bg-slate-800"></div>
-                <div className="text-lg font-medium text-slate-300">
-                  {step.desc}
+
+                <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
+                  <div className="flex items-start mb-2">
+                    <span className="text-2xl mr-3">🌿</span>
+                    <div>
+                      <strong className="text-white text-lg block mb-1">保育事業組：</strong>
+                      <span className="text-slate-300 text-lg">同樣走標準程序，把公文傳給組內一科到四科的所有同仁。</span>
+                    </div>
+                  </div>
+                  <div className="ml-9 border-l-2 border-slate-700 pl-4 py-1">
+                    <strong className="text-emerald-400">最終綜整：</strong> <span className="text-slate-300">經過內部各科確認，同樣回覆<strong className="text-white">「無意見」</strong>，支持由綜合企劃組提出的建議。</span>
+                  </div>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
 
+        <FlowchartAccordion>
+          <div className="flex flex-col items-center justify-center space-y-6">
+            <div className="bg-slate-800 border-2 border-blue-500 p-5 rounded-2xl shadow-lg w-56 text-center">
+              <p className="text-sm font-bold text-slate-500 uppercase mb-1 tracking-widest">主辦</p>
+              <p className="font-bold text-xl text-white">綜合企劃組</p>
+            </div>
+
+            <ArrowDown className="w-8 h-8 text-blue-500/50 flex-shrink-0" />
+
+            <div className="flex flex-row flex-wrap justify-center gap-4">
+              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 text-base w-32 md:w-48 text-center text-slate-300">水源經營組</div>
+              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 text-base w-32 md:w-48 text-center text-slate-300">保育事業組</div>
+            </div>
+
+            <ArrowDown className="w-8 h-8 text-blue-500/50 flex-shrink-0" />
+
+            <div className="bg-blue-900/40 text-blue-100 p-8 rounded-[2rem] shadow-xl w-full max-w-sm border border-blue-500/30">
+              <h4 className="text-sm font-bold text-blue-400 mb-5 uppercase tracking-widest text-center">各單位內部處理程序</h4>
+              <ol className="text-base space-y-4">
+                <li className="flex items-start"><CheckCircle className="w-5 h-5 mr-3 text-blue-400 mt-0.5 flex-shrink-0" /> <span>會辦人設定「內會並會」其他科</span></li>
+                <li className="flex items-start"><CheckCircle className="w-5 h-5 mr-3 text-blue-400 mt-0.5 flex-shrink-0" /> <span>各科會辦人內會陳核科長後<strong className="text-blue-200">送回至原會辦人</strong></span></li>
+                <li className="flex items-start"><CheckCircle className="w-5 h-5 mr-3 text-blue-400 mt-0.5 flex-shrink-0" /> <span>原會辦人內會陳核單位主管</span></li>
+              </ol>
+            </div>
+
+            <ArrowDown className="w-8 h-8 text-blue-500/50 flex-shrink-0" />
+
+            <div className="bg-slate-800/80 border border-slate-700/50 p-5 rounded-2xl text-center shadow-md w-full max-w-sm flex justify-center">
+              <span className="text-slate-300 font-bold leading-relaxed tracking-wider">送回原承辦人</span>
+            </div>
+          </div>
+        </FlowchartAccordion>
+
         <div className="w-full my-8">
-          <ImagePlaceholder label="情境 4 複雜流程圖" />
+          <ImagePlaceholder src="/images/018.jpg" label="設定歷程" />
         </div>
 
-        <div className="bg-amber-950/20 border border-amber-900/30 p-6 rounded-2xl">
-          <h5 className="text-amber-400 font-bold mb-3 flex items-center text-sm uppercase tracking-widest">
-            <AlertCircle className="w-5 h-5 mr-2" /> 注意事項
-          </h5>
-          <p className="text-base text-amber-500/80 leading-relaxed">
-            涉及多層級流轉。設定「內會並會」時，務必確認路徑，避免公文迷路。
-          </p>
-        </div>
+
       </div>
     </div>
   );
 }
 
+
 function ThanksSlide() {
   return (
-    <div className="h-full flex flex-col items-center justify-center text-center space-y-10">
+    <div className="h-full flex flex-col items-center justify-center text-center space-y-12 py-16 md:py-24">
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -435,28 +747,7 @@ function ThanksSlide() {
         >
           課程結束，謝謝大家！
         </motion.h2>
-        <motion.p
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="text-xl text-slate-400 max-w-2xl mx-auto font-light leading-relaxed"
-        >
-          希望這份教學能幫助您更順暢地處理公文會辦流程。<br className="hidden md:block" />
-          若有任何疑問，請洽詢單位公文管理人員。
-        </motion.p>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="pt-10"
-      >
-        <div className="flex flex-col items-center space-y-3 text-slate-500 text-sm font-medium">
-          <span>這是一個自由滾動的頁面，你可以隨時上下閱讀。</span>
-          <p>若要在任一段落加入圖片，只需加入 <code className="bg-slate-800 px-2 py-1 rounded">{'<ImagePlaceholder src="圖片網址" label="圖片說明" />'}</code> 即可。</p>
-        </div>
-      </motion.div>
     </div>
   );
 }
